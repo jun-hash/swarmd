@@ -1,0 +1,29 @@
+# swarmd <-> Hermes: merge into ~/.hermes/config.yaml, then restart Hermes.
+#
+# SWARM_SECRET = the contents of ~/swarm/secret (written by `swarm init`, 0600). Export it in
+# the environment Hermes starts from, for example:
+#   export SWARM_SECRET="$(cat ~/swarm/secret)"
+# Never paste the secret itself into this file.
+
+mcp_servers:
+  swarm:
+    url: "http://127.0.0.1:8765/mcp"        # swarmd internal_port (config.toml), loopback only
+    headers:
+      Authorization: "Bearer ${SWARM_SECRET}"  # verify against your Hermes: Hermes expands ${VAR} in headers
+
+skills:
+  # Install: cp -R hermes/skills/swarm-front ~/.hermes/skills/swarm-front
+  # verify against your Hermes: the skills directory and enable key are assumed
+  enabled:
+    - swarm-front
+
+kanban:
+  # swarmd mirrors each project onto its own board, named after the project slug
+  # (`swarm project create --slug compet` -> board "compet"). Its cards have no assignee, and
+  # these boards are also excluded from the dispatcher, so Hermes never runs its own agents on
+  # swarm's cards. Add every new swarm project's slug here.
+  # verify against your Hermes: the exact key shape of kanban.dispatch_profiles is assumed
+  dispatch_profiles:
+    default:
+      exclude_boards:
+        - compet

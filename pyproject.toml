@@ -1,0 +1,44 @@
+[project]
+name = "swarm"
+version = "0.1.0"
+description = "swarmd: always-on browser employee daemon"
+readme = "README.md"
+license = "MIT"
+requires-python = ">=3.12"
+dependencies = [
+    "websockets",
+    "httpx",
+    "mcp",
+    "pydantic>=2",
+    "uvicorn",
+    "starlette",
+    "httpx2>=2.16.0",
+]
+
+[project.scripts]
+swarmd = "swarm.daemon:run"
+swarm = "swarm.cli:main"
+swarm-browser-mcp = "swarm.harness.own.browser_mcp:main"
+
+[dependency-groups]
+dev = ["pytest", "pytest-asyncio", "ruff"]
+
+[build-system]
+requires = ["uv_build>=0.11.6,<0.12.0"]
+build-backend = "uv_build"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+markers = [
+    "integration: needs real external processes (Chrome, claude CLI)",
+    "hermes: needs a running Hermes instance",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

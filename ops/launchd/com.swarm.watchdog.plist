@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  swarm watchdog: one pass every 2 minutes (heartbeat -> kickstart com.swarm.swarmd, stuck
+  runs -> internal cancel). Same placeholders and install steps as com.swarm.swarmd.plist.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.swarm.watchdog</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__VENV__/bin/python</string>
+    <string>-m</string>
+    <string>swarm.watchdog</string>
+    <string>--config</string>
+    <string>__HOME__/swarm/config.toml</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>__HOME__/swarm</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>__HOME__/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+  </dict>
+  <key>StartInterval</key>
+  <integer>120</integer>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>StandardOutPath</key>
+  <string>__HOME__/swarm/logs/watchdog.log</string>
+  <key>StandardErrorPath</key>
+  <string>__HOME__/swarm/logs/watchdog.log</string>
+</dict>
+</plist>

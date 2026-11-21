@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  swarmd: always on. Placeholders (launchd expands neither ~ nor $VARS):
+    __HOME__  the user's home, e.g. /Users/you
+    __VENV__  the project's virtualenv, e.g. /Users/you/browser-swarm/.venv
+  Install: sed -e "s|__HOME__|$HOME|g" -e "s|__VENV__|$PWD/.venv|g" ops/launchd/com.swarm.swarmd.plist
+           > ~/Library/LaunchAgents/com.swarm.swarmd.plist
+           launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/com.swarm.swarmd.plist
+  ExitTimeOut (40 s) > swarmd's 30 s shutdown budget, so a SIGTERM never ends in SIGKILL.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.swarm.swarmd</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>__VENV__/bin/swarmd</string>
+    <string>--config</string>
+    <string>__HOME__/swarm/config.toml</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>__HOME__/swarm</string>
+  <key>EnvironmentVariables</key>
+  <dict>
+    <key>PATH</key>
+    <string>__HOME__/.local/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin</string>
+    <key>LANG</key>
+    <string>ko_KR.UTF-8</string>
+  </dict>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>ExitTimeOut</key>
+  <integer>40</integer>
+  <key>StandardOutPath</key>
+  <string>__HOME__/swarm/logs/swarmd.out.log</string>
+  <key>StandardErrorPath</key>
+  <string>__HOME__/swarm/logs/swarmd.err.log</string>
+</dict>
+</plist>
